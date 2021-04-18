@@ -23,7 +23,8 @@ class employerController {
 
     addEmployer = async (params) => {
         return new Promise((resolve,reject) => {
-            repository.query(POST_ADD_EMPLOYER,[params.cpf,params.nome,params.endereco,params.telefone,
+            repository.query(POST_ADD_EMPLOYER,[params.cpf,params.nome,
+                params.rua,params.numero,params.bairro,params.cidade,params.estado,params.telefone,
                 params.dataNascimento, params.email, params.senha, params.salario, params.idGerente])
             .then(response => {
                 if(response.rows){
@@ -63,7 +64,9 @@ class employerController {
     updateEmployer = async function(req,res){
         const params = req.body
         try{
-            await repository.query(UPDATE_EMPLOYER,[params.nome,params.endereco,params.telefone, params.salario, params.idFuncionario])
+            await repository.query(UPDATE_EMPLOYER,[params.nome,
+                params.rua,params.numero,params.bairro,params.cidade,params.estado,
+                params.telefone, params.salario, params.idFuncionario])
             res.send({error: false}) 
         }catch(error){
             res.status(500).send({error: true, message: "Houve algum problema ao editar o Funcionário."})
@@ -84,14 +87,18 @@ class employerController {
 
 POST_ADD_EMPLOYER =
 "INSERT INTO FUNCIONARIO "+
-"(cpf,nome,endereco,telefone,data_nascimento,data_inicio,email,pass,salario,id_gerente) "+
-"VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, $6, $7, $8, $9)"
+"(cpf,nome,rua,numero,bairro,cidade,estado,telefone,data_nascimento,data_inicio,email,pass,salario,id_gerente) "+
+"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_DATE, $10, $11, $12, $13)"
 
 GET_EMPLOYERS_MANNAGER = 
 "SELECT "+
 "   id_func as idFuncionario,"+
 "   nome,"+
-"   endereco,"+
+"   rua,"+
+"   numero,"+
+"   bairro,"+
+"   cidade,"+
+"   estado,"+
 "   telefone,"+
 "   data_nascimento AS dataNascimento,"+
 "   salario "+
@@ -113,11 +120,15 @@ UPDATE_EMPLOYER =
 "UPDATE FUNCIONARIO "+
 "SET"+
 "   nome = $1,"+
-"   endereco = $2,"+
-"   telefone = $3,"+
-"   salario = $4 "+
+"   rua= $2,"+
+"   numero= $3,"+
+"   bairro= $4,"+
+"   cidade= $5,"+
+"   estado= $6,"+
+"   telefone = $7,"+
+"   salario = $8 "+
 "WHERE"+
-"   id_func = $5"
+"   id_func = $9"
 
 DELETE_EMPLOYER = 
 "DELETE "+

@@ -14,7 +14,8 @@ class clientController {
      addClients = async (params) => {
 
         return new Promise((resolve,reject) => {
-            repository.query(POST_ADD_CLIENT,[params.cpf,params.nome,params.data_nascimento,params.telefone,params.endereco])
+            repository.query(POST_ADD_CLIENT,[params.cpf,params.nome,params.data_nascimento,params.telefone,
+                params.rua,params.numero,params.bairro,params.cidade,params.estado])
             .then(response => {
                 if(response.rows){
                     resolve(response.rows)
@@ -40,7 +41,9 @@ class clientController {
     updateClient = async function(req,res){
         const params = req.body
         try{
-            await repository.query(UPDATE_CLIENT,[params.nome,params.telefone,params.endereco,params.idCliente])
+            await repository.query(UPDATE_CLIENT,[params.nome,params.telefone,
+                params.rua,params.numero,params.bairro,params.cidade,params.estado,
+                params.idCliente])
             res.send({error: false}) 
         }catch(error){
             res.status(500).send({error: true, message: "Houve algum problema ao editar o cliente."})
@@ -60,14 +63,18 @@ class clientController {
 
 POST_ADD_CLIENT =
 "INSERT INTO CLIENTE "+
-"(cpf,nome,data_nascimento,telefone,endereco) "+
-"VALUES ($1, $2, $3, $4, $5)"
+"(cpf,nome,data_nascimento,telefone,rua,numero,bairro,cidade,estado) "+
+"VALUES ($1, $2, $3, $4, $5,$6,$7,$8,$9)"
 
 GET_CLIENTS =
 "SELECT "+
 "   id_cliente AS idCliente,"+
 "   nome,"+
-"   endereco,"+
+"   rua,"+
+"   numero,"+
+"   bairro,"+
+"   cidade,"+
+"   estado,"+
 "   telefone,"+
 "   data_nascimento "+
 "FROM CLIENTE"
@@ -77,9 +84,13 @@ UPDATE_CLIENT =
 "SET"+
 "   nome = $1,"+
 "   telefone= $2,"+
-"   endereco= $3"+
+"   rua= $3,"+
+"   numero= $4,"+
+"   bairro= $5,"+
+"   cidade= $6,"+
+"   estado= $7 "+
 "WHERE"+
-"  id_cliente = $4"
+"  id_cliente = $8"
 
 DELETE_CLIENT = 
 "DELETE "+

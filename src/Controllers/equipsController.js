@@ -29,7 +29,8 @@ class equipsController {
 
     addEquip = async (params) => {
         return new Promise((resolve,reject) => {
-            repository.query(POST_ADD_EQUIP,[params.tipo,params.defeito,params.idCliente]).then(response => {
+            repository.query(POST_ADD_EQUIP,[params.tipo,params.modelo,params.defeito,
+                                params.idCliente,params.idFuncionario]).then(response => {
                 if(response.rows){
                     resolve(response.rows)
                 }else{
@@ -42,7 +43,7 @@ class equipsController {
     updateEquip = async function(req,res){
         const params = req.body
         try{
-            await repository.query(UPDATE_EQUIP,[params.tipo,params.defeito,params.status, params.idEquipamento])
+            await repository.query(UPDATE_EQUIP,[params.modelo,params.defeito,params.status, params.idEquipamento])
             res.send({error: false}) 
         }catch(error){
             res.status(500).send({error: true, message: "Houve algum problema ao editar o Serviço."})
@@ -63,6 +64,7 @@ GET_EQUIPS_EMPLOYER =
 "SELECT"+
 "   id_equipamento AS idEquipamento,"+
 "   tipo,"+
+"   modelo,"+
 "   defeito,"+
 "   data_entrada AS dataEntrada,"+
 "   status "+
@@ -74,6 +76,7 @@ GET_EQUIPS_CLIENT =
 "SELECT "+
 "   E.id_equipamento AS idEquipamento,"+
 "   E.tipo,"+
+"   E.modelo,"+
 "   E.data_entrada AS dataEntrada,"+
 "   E.status "+
 "FROM EQUIPAMENTO E,"+ 
@@ -87,13 +90,13 @@ GET_EQUIPS_CLIENT =
 
 POST_ADD_EQUIP =
 "INSERT INTO EQUIPAMENTO "+
-"(tipo, defeito, id_cliente) "+
-"VALUES ($1, $2, $3)"
+"(tipo, modelo, defeito, data_entrada,id_cliente, id_func) "+
+"VALUES ($1, $2, $3, CURRENT_DATE, $4, $5)"
 
 UPDATE_EQUIP = 
 "UPDATE EQUIPAMENTO "+
 "SET"+
-"   tipo = $1,"+
+"   modelo = $1,"+
 "   defeito = $2,"+
 "   status= $3 "+
 "WHERE"+
