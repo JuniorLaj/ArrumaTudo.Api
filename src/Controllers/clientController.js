@@ -1,11 +1,20 @@
 const repository = require("../db")
 
 class clientController {
-     
-     signClients = async (params) => {
-        const query = process.env.POST_SIGN_CLIENT
+     verifyCpfClient = async (params) => {
+         return new Promise((resolve,reject) => {
+            repository.query(("SELECT * FROM CLIENTE WHERE cpf = $1"),[params.cpf])
+            .then(response => {
+               resolve(response)
+         }).catch(error => {
+             reject(error)
+         })
+    })}
+
+     addClients = async (params) => {
+
         return new Promise((resolve,reject) => {
-            repository.query(query,[params.cpf,params.nome,params.data_nascimento,params.telefone,params.endereco])
+            repository.query(POST_ADD_CLIENT,[params.cpf,params.nome,params.data_nascimento,params.telefone,params.endereco])
             .then(response => {
                 if(response.rows){
                     resolve(response.rows)
@@ -15,11 +24,10 @@ class clientController {
             })
         })
      }
+
      findClients= async () => {
-        // const connect = await Connect()
-        const query = process.env.GET_CLIENTS
         return new Promise((resolve,reject) => {
-            repository.query(query).then(response => {
+            repository.query(GET_CLIENTS).then(response => {
                 if(response.rows){
                     resolve(response.rows)
                 }else{
@@ -31,10 +39,8 @@ class clientController {
 
     updateClient = async function(req,res){
         const params = req.body
-        console.log(params)
-        const query = process.env.UPDATE_CLIENT
         try{
-            await repository.query(query,[params.nome,params.data_nascimento,params.telefone,params.endereco,params.cpf])
+            await repository.query(UPDATE_CLIENT,[params.nome,params.telefone,params.endereco,params.idCliente])
             res.send({error: false}) 
         }catch(error){
             res.status(500).send({error: true, message: "Houve algum problema ao editar o cliente."})
@@ -42,15 +48,43 @@ class clientController {
     }
 
     deleteClient= async function(req,res){
-        // const connect = await Connect()
-        const query = process.env.DELETE_CLIENT
         try {
-            await repository.query(query,[req.params.cpf])
+            await repository.query(DELETE_CLIENT,[req.params.idCliente])
             res.send({error: false})
         }catch(error){
             res.status(500).send({error: true, message:'Houve algum problema ao excluir o cliente.' })
         }
     }
+    
 }
+
+POST_ADD_CLIENT =
+"INSERT INTO CLIENTE "+
+"(cpf,nome,data_nascimento,telefone,endereco) "+
+"VALUES ($1, $2, $3, $4, $5)"
+
+GET_CLIENTS =
+"SELECT "+
+"   id_cliente AS idCliente,"+
+"   nome,"+
+"   endereco,"+
+"   telefone,"+
+"   data_nascimento "+
+"FROM CLIENTE"
+
+UPDATE_CLIENT = 
+"UPDATE CLIENTE "+
+"SET"+
+"   nome = $1,"+
+"   telefone= $2,"+
+"   endereco= $3"+
+"WHERE"+
+"  id_cliente = $4"
+
+DELETE_CLIENT = 
+"DELETE "+
+"FROM CLIENTE "+
+"WHERE"+
+"   id_cliente = $1"
 
 module.exports = new clientController()
