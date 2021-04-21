@@ -39,7 +39,7 @@ class employerController {
     findEmployer = async (params) => {
         return new Promise((resolve,reject) => {
             repository.query(GET_EMPLOYERS_MANNAGER,[params.idGerente]).then(response => {
-                if(response.rows){
+                if(response.rowCount){
                     resolve(response.rows)
                 }else{
 
@@ -52,7 +52,7 @@ class employerController {
     loginEmployer = async (params)=> {
         return new Promise((resolve,reject) => {
             repository.query(POST_LOGIN_EMPLOYER,[params.email,params.password]).then(response => {
-                if(response.rows){
+                if(response.rowCount){
                     resolve(response.rows[0])
                 }else{
                     reject(response.error)
@@ -93,6 +93,7 @@ POST_ADD_EMPLOYER =
 GET_EMPLOYERS_MANNAGER = 
 "SELECT "+
 "   id_func as idFuncionario,"+
+"   cpf,"+
 "   nome,"+
 "   rua,"+
 "   numero,"+
@@ -101,10 +102,12 @@ GET_EMPLOYERS_MANNAGER =
 "   estado,"+
 "   telefone,"+
 "   data_nascimento AS dataNascimento,"+
+"   data_inicio AS dataInicio,"+
 "   salario "+
 "FROM FUNCIONARIO "+
 "WHERE "+
-"   id_gerente = $1 AND id_gerente <> id_func"
+"   id_gerente = $1 AND id_gerente <> id_func "+
+"ORDER BY dataInicio DESC"
 
 POST_LOGIN_EMPLOYER = 
 "SELECT "+

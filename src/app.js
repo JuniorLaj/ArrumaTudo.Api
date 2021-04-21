@@ -12,10 +12,7 @@ app.use("/v1/client",routesClient)
 app.use("/v1/employer",routesEmployer)
 app.use("/v1/equip",routesEquip)
 
-
 const server = require("http").createServer(app)
-
-
 
 server.listen(8080, ()=> {
     console.log("server run port 8080...")

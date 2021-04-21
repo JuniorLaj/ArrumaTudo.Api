@@ -31,7 +31,7 @@ class equipsController {
         return new Promise((resolve,reject) => {
             repository.query(POST_ADD_EQUIP,[params.tipo,params.modelo,params.defeito,
                                 params.idCliente,params.idFuncionario]).then(response => {
-                if(response.rows){
+                if(response.rowCount){
                     resolve(response.rows)
                 }else{
                     reject(response.error)
@@ -70,7 +70,9 @@ GET_EQUIPS_EMPLOYER =
 "   status "+
 "FROM EQUIPAMENTO "+
 "WHERE"+
-"   id_func = $1"
+"   id_func = $1 "+
+"ORDER BY dataEntrada "
+
 
 GET_EQUIPS_CLIENT = 
 "SELECT "+
@@ -86,7 +88,8 @@ GET_EQUIPS_CLIENT =
 "    WHERE "+
 "       cpf = $1 ) C "+
 "WHERE"+
-"   C.id_cliente = E.id_cliente "
+"   C.id_cliente = E.id_cliente "+
+"ORDER BY dataEntrada DESC "
 
 POST_ADD_EQUIP =
 "INSERT INTO EQUIPAMENTO "+

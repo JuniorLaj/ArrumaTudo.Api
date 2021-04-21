@@ -14,6 +14,7 @@ route.get("/retornatipos",async function(req,res){
     ]
     res.status(200).send(tipos)
 })
+
 route.get("/funcionarios/:idFuncionario",async function(req,res){
     try{
         const response = await equipsController.findEquip(req.params)

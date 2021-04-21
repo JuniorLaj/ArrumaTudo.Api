@@ -17,7 +17,7 @@ class clientController {
             repository.query(POST_ADD_CLIENT,[params.cpf,params.nome,params.data_nascimento,params.telefone,
                 params.rua,params.numero,params.bairro,params.cidade,params.estado])
             .then(response => {
-                if(response.rows){
+                if(response.rowCount){
                     resolve(response.rows)
                 }else{
                     reject(response.error)
@@ -29,7 +29,7 @@ class clientController {
      findClients= async () => {
         return new Promise((resolve,reject) => {
             repository.query(GET_CLIENTS).then(response => {
-                if(response.rows){
+                if(response.rowCount){
                     resolve(response.rows)
                 }else{
                     reject(response.error)
@@ -63,12 +63,13 @@ class clientController {
 
 POST_ADD_CLIENT =
 "INSERT INTO CLIENTE "+
-"(cpf,nome,data_nascimento,telefone,rua,numero,bairro,cidade,estado) "+
-"VALUES ($1, $2, $3, $4, $5,$6,$7,$8,$9)"
+"(cpf,nome,data_nascimento,data_inicio,telefone,rua,numero,bairro,cidade,estado) "+
+"VALUES ($1, $2, $3, CURRENT_DATE, $4, $5,$6,$7,$8,$9)"
 
 GET_CLIENTS =
 "SELECT "+
 "   id_cliente AS idCliente,"+
+"   cpf,"+
 "   nome,"+
 "   rua,"+
 "   numero,"+
@@ -76,8 +77,10 @@ GET_CLIENTS =
 "   cidade,"+
 "   estado,"+
 "   telefone,"+
-"   data_nascimento "+
-"FROM CLIENTE"
+"   data_nascimento AS dataNascimento,"+
+"   data_inicio AS dataInicio "+
+"FROM CLIENTE "+
+"ORDER BY dataInicio"
 
 UPDATE_CLIENT = 
 "UPDATE CLIENTE "+
